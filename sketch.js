@@ -9,6 +9,8 @@ var END=0
 var PLAY=2
 var estadodojogo=PLAY;
 var morte, vivo, pulando;
+var gameover,gameover1;
+var restart, restart1;
 
 function preload(){
   trex_running = loadAnimation("trex1.png","trex3.png","trex4.png");
@@ -23,6 +25,8 @@ cacto6= loadImage ("obstacle6.png");
 morte= loadSound("die.mp3");
 pulando= loadSound ("jump.mp3");
 vivo = loadSound("vivo1.mp3");
+gameover= loadImage("gameOver.png");
+restart= loadImage("restart.png");
 }
 function setup(){
   createCanvas(600,200);
@@ -47,6 +51,14 @@ invisibleGround=createSprite(300,190,600,10);
 invisibleGround.visible=false;
 cactos = new Group();
 nuvens = new Group();
+
+gameover1= createSprite(300,110);
+gameover1.addImage(gameover);
+gameover1.scale=0.3;
+
+restart1= createSprite (300,90);
+restart1.addImage(restart);
+restart1.scale=0.4;
 }
 
 
@@ -58,7 +70,9 @@ function draw(){
   text("score"+score1,450,50);
 
   if(estadodojogo===PLAY){
-score1=score1+ Math.round(getFrameRate()/150)
+score1=score1+ Math.round(frameCount/150)
+gameover1.visible=false
+restart1.visible=false
   //registrando a posição y do trex
   console.log("PLAY");
 if(score1%100===0&&score1>0){
@@ -95,8 +109,12 @@ if(score1%100===0&&score1>0){
     nuvens.setVelocityXEach(0)
   cactos.setLifetimeEach(-1);
   nuvens.setLifetimeEach(-1);
+gameover1.visible=true;
+restart1.visible=true; 
+if(mousePressedOver(restart1)){
 
-  }
+}
+}
   trex.collide(invisibleGround);
   drawSprites();
 }
@@ -113,10 +131,10 @@ nuvens.add(nuvem);
 }
 }
 function Pao(){
-  if(frameCount%60==0){
-    var cacto = createSprite (450,175,50,50);
+  if(frameCount%80==0){
+    var cacto = createSprite (600,175,50,50);
   cacto.velocityX= -3-score1/100;
-  cacto.lifetime=150
+  cacto.lifetime=200
   cacto.scale=0.6;
   cactos.add(cacto);
 var numero= Math.round(random (1,6));
