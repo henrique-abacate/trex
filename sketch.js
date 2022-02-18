@@ -70,7 +70,7 @@ function draw(){
   text("score"+score1,450,50);
 
   if(estadodojogo===PLAY){
-score1=score1+ Math.round(frameCount/150)
+score1=score1+ Math.round(frameCount/300)
 gameover1.visible=false
 restart1.visible=false
   //registrando a posição y do trex
@@ -112,7 +112,7 @@ if(score1%100===0&&score1>0){
 gameover1.visible=true;
 restart1.visible=true; 
 if(mousePressedOver(restart1)){
-
+reset();
 }
 }
   trex.collide(invisibleGround);
@@ -154,4 +154,12 @@ switch(numero){
   default: break;
 }
 }
+}
+function reset(){
+  estadodojogo=PLAY
+  gameover1.visible=false
+  restart1.visible=false
+cactos.destroyEach();
+nuvens.destroyEach();
+score1=0;
 }
