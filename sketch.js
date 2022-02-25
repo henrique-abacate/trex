@@ -29,10 +29,11 @@ gameover= loadImage("gameOver.png");
 restart= loadImage("restart.png");
 }
 function setup(){
-  createCanvas(600,200);
-  
+  createCanvas(windowWidth,windowHeight);
+  //createCanvas(600,200);
+
   //criando o trex
-  trex = createSprite(50,160,20,50);
+  trex = createSprite(50,height-40,20,50);
   trex.addAnimation("running", trex_running);
   edges = createEdgeSprites();
   
@@ -43,55 +44,53 @@ function setup(){
 trex.setCollider("circle",0,0,50);
 trex.debug=false;
 
- ground=createSprite(300,180,600,20);
+ ground=createSprite(width/2,height-20,width,20);
 
 ground.addImage(groundImage);
 ground.velocityX=-6-score1/100;
-invisibleGround=createSprite(300,190,600,10);
+ground.scale = 1.5;
+invisibleGround=createSprite(width/2,height-10,width,10);
 invisibleGround.visible=false;
 cactos = new Group();
 nuvens = new Group();
 
-gameover1= createSprite(300,110);
+gameover1= createSprite(width/2,height/2+10);
 gameover1.addImage(gameover);
 gameover1.scale=0.3;
 
-restart1= createSprite (300,90);
+restart1= createSprite (width/2,height/2-10);
 restart1.addImage(restart);
 restart1.scale=0.4;
 }
-
-
 
 function draw(){
   //definir a cor do plano de fundo 
   background("white");
   textSize(20);
-  text("score"+score1,450,50);
+  text("score"+score1,width-150,50);
 
   if(estadodojogo===PLAY){
-score1=score1+ Math.round(frameCount/300)
-gameover1.visible=false
-restart1.visible=false
+    score1=score1+ Math.round(getFrameRate()/60);
+    ground.velocityX=-6-score1/100;
+    console.log(getFrameRate());
+    gameover1.visible=false
+    restart1.visible=false
   //registrando a posição y do trex
   console.log("PLAY");
 if(score1%100===0&&score1>0){
   vivo.play();
 }
 
-
-
-
   //pular quando tecla de espaço for pressionada
-  if(keyDown("space")&& trex.y>=160 ){
+  if((touches.length>0 || keyDown("space")) && trex.y>=height-40){
     trex.velocityY = -10;
     pulando.play();
-  
+    touches = [];
   }
   
   trex.velocityY = trex.velocityY + 0.5;
   if (ground.x<0){
-    ground.x = ground.width /2;
+    ground.x = ground.width/2;
   }
  //impedir que o trex caia
 
@@ -111,8 +110,9 @@ if(score1%100===0&&score1>0){
   nuvens.setLifetimeEach(-1);
 gameover1.visible=true;
 restart1.visible=true; 
-if(mousePressedOver(restart1)){
+if(touches.length>0 || mousePressedOver(restart1)){
 reset();
+touches = [];
 }
 }
   trex.collide(invisibleGround);
@@ -121,28 +121,28 @@ reset();
 
 function nuvem (){
 if(frameCount%60==0){
-    var nuvem = createSprite (450,100,50,50);
+    var nuvem = createSprite (width-150,height/2,50,50);
   nuvem.addImage(nuvemMg);
-  nuvem.y = Math.round(random(60,100))
+  nuvem.y = Math.round(random(height/2-40,height/2));
   trex.depth=nuvem.depth+1
 nuvem.velocityX= -3;
-nuvem.lifetime=150
+nuvem.lifetime=1000;
 nuvens.add(nuvem);
 }
 }
 function Pao(){
-  if(frameCount%80==0){
-    var cacto = createSprite (600,175,50,50);
-  cacto.velocityX= -3-score1/100;
-  cacto.lifetime=200
+  if(frameCount%60==0){
+    var cacto = createSprite(width,height-25,50,50);
+  cacto.velocityX= -6-score1/100;
+  cacto.lifetime=1000;
   cacto.scale=0.6;
   cactos.add(cacto);
-var numero= Math.round(random (1,6));
+var numero= Math.round(random(1,6));
 switch(numero){
   case 1:cacto.addImage(cacto1);
   break;
   case 2:cacto.addImage(cacto2);
-  break;1
+  break;
   case 3:cacto.addImage(cacto3);
   break;
   case 4:cacto.addImage(cacto4);
